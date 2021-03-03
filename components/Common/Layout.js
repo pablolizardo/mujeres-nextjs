@@ -5,12 +5,12 @@ function Layout({ children }) {
     return (
         <div id='container'>
             <header>
-                <Link href='/'><a href='/'>Mujeres De Nuestra Historia</a></Link>
+                <Link href='/'><a href='/'><strong>Mujeres De Nuestra Historia</strong></a></Link>
                 <nav>
-                    <Link href='/'><a href='/'>Inicio</a></Link>
-                    <Link href='/presentacion'><a href='/presentacion'>Presentación</a></Link>
-                    <Link href='/elproyecto'><a href='/elproyecto'>El proyecto</a></Link>
-                    <Link href='/buscar'><a href='/buscar'>Buscar</a></Link>
+                    <Link activeClass='active' href='/'><a href='/'>Inicio</a></Link>
+                    <Link activeClass='active' href='/presentacion'><a href='/presentacion'>Presentación</a></Link>
+                    <Link activeClass='active' href='/elproyecto'><a href='/elproyecto'>El proyecto</a></Link>
+                    <Link activeClass='active' href='/buscar'><a href='/buscar'>Buscar</a></Link>
 
                 </nav>
             </header>
@@ -19,7 +19,9 @@ function Layout({ children }) {
             </main>
             <aside>Sidebar</aside>
             <footer>
-                Footer
+                <span>Mujeres de Nuestra Historia</span>
+                <span>Copyright 2021®</span>
+                <span>Ir a arriba ↑</span>
             </footer>
         </div>
     )
