@@ -14,3 +14,22 @@ a {
 * {
   box-sizing: border-box;
 }
+
+
+#app{
+  display: grid;
+  border:1px solid red;
+  max-width: 800px;
+  grid-template-columns: 1fr 300px;
+  margin:auto;
+  gap: 1rem;
+  grid-template-areas: 
+  "header header"
+  "content sidebar"
+  "footer footer"
+  ;
+}
+
+header {
+  
+}
