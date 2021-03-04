@@ -12,8 +12,8 @@ export default function Home(posts) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        {posts.data.items.map(post =>
-          <PostLink post={post} />
+        {posts.data.items.map((post, index) =>
+          <PostLink post={post} key={index} />
         )}
       </Layout>
     </div>
