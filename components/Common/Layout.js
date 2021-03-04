@@ -1,17 +1,19 @@
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 function Layout({ children }) {
     return (
         <div id='container'>
-            <header>
-                <Link href='/'><a href='/'><strong>Mujeres De Nuestra Historia</strong></a></Link>
+            <header id="header">
+                <Link href='/'><a href='/'>
+                    <Image src='/images/logo.png' width={140} height={70} objectFit='contain' />
+                </a></Link>
                 <nav>
                     <Link activeClass='active' href='/'><a href='/'>Inicio</a></Link>
                     <Link activeClass='active' href='/presentacion'><a href='/presentacion'>Presentación</a></Link>
                     <Link activeClass='active' href='/elproyecto'><a href='/elproyecto'>El proyecto</a></Link>
                     <Link activeClass='active' href='/buscar'><a href='/buscar'>Buscar</a></Link>
-
                 </nav>
             </header>
             <main>
@@ -21,7 +23,7 @@ function Layout({ children }) {
             <footer>
                 <span>Mujeres de Nuestra Historia</span>
                 <span>Copyright 2021®</span>
-                <span>Ir a arriba ↑</span>
+                <Link replace href="#header"><a href="#header">Ir a arriba ↑</a></Link>
             </footer>
         </div>
     )

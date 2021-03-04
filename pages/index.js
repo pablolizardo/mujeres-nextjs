@@ -1,9 +1,10 @@
 import Head from 'next/head'
 import Layout from '../components/Common/Layout'
-import Post from '../components/Common/Post'
+import PostLink from '../components/Common/PostLink'
 import styles from '../styles/Home.module.css'
 
-export default function Home() {
+export default function Home(posts) {
+
   return (
     <div className={styles.container}>
       <Head>
@@ -11,9 +12,27 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-
-        <Post slug='mariainesoscares' />
+        {posts.data.items.map(post =>
+          <PostLink post={post} />
+        )}
       </Layout>
     </div>
   )
+}
+
+export const getServerSideProps = async (ctx) => {
+  const space = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID
+  const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN
+  const client = require('contentful').createClient({
+    space: space,
+    accessToken: accessToken,
+  })
+  const posts = await client.getEntries({
+    content_type: 'blogPost'
+  })
+  return {
+    props: {
+      data: posts
+    }
+  }
 }
