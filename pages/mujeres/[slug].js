@@ -1,7 +1,6 @@
 import React from 'react'
 import Layout from '../../components/Common/Layout'
 
-
 function Post(post) {
     return <Layout>
         <h1>{post.fields.title}</h1>
@@ -21,7 +20,6 @@ export const getStaticPaths = async () => {
     const posts = await client.getEntries({
         content_type: 'blogPost'
     })
-    console.log(posts.items.map(post => post.fields.slug))
     return {
         paths: posts.items.map(post => { return { params: { slug: post.fields.slug } } }),
         fallback: true
@@ -29,7 +27,6 @@ export const getStaticPaths = async () => {
 }
 
 
-// This also gets called at build time
 export async function getStaticProps({ params }) {
     const space = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID
     const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN
@@ -41,6 +38,5 @@ export async function getStaticProps({ params }) {
         content_type: 'blogPost'
     })
 
-    // Pass post data to the page via props
     return { props: posts.items.find(post => post.fields.slug === params.slug) }
 }
