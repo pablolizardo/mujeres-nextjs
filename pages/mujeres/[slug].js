@@ -1,12 +1,26 @@
+import Link from "next/link";
 import React from 'react'
 import Layout from '../../components/Common/Layout'
-
+import styles from "./Post.module.css";
 function Post(post) {
-    return <Layout>
-        <h1>{post.fields.title}</h1>
-        <h2>{post.fields.subtitle}</h2>
-        <p style={{ whiteSpace: 'pre-line' }} dangerouslySetInnerHTML={{ __html: post.fields.body }}></p>
-    </Layout>
+    return (
+      <Layout>
+        <h2 className={styles.title}>{post.fields.title}</h2>
+        <h3 className={styles.subtitle}>
+          {post.fields.subtitle || "Madre y Docente"}
+        </h3>
+        <img
+          className={styles.image}
+          src={"https:" + post.fields.heroImage.fields.file.url}
+        />
+        {post.fields.body.split("\n").filter(p => p !== '').map(p => 
+        <p
+            className={styles.paragraph}
+            dangerouslySetInnerHTML={{ __html: p }}
+            />
+        )}
+      </Layout>
+    );
 }
 export default Post
 

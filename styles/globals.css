@@ -6,8 +6,11 @@
   --border-width : 2px;
   --border-radius : 5px;
   --primary : #9F5765;
-  --secondary : #C3A60A;
+  --secondary : #c4c4c4;
   --text-color : #333;
+}
+::selection{
+background-color: #c3a70a3b;
 }
 html,
 body {
@@ -33,7 +36,7 @@ a {
 #container{
   display: grid;
   border:var(--debug) solid red;
-  max-width: 1080px;
+  max-width: 1280px;
   grid-template-columns: 1fr ;
   margin:auto;
   width: 90%;
@@ -45,7 +48,7 @@ a {
   "footer"
   ;
 }
-@media screen and (min-width: 900px) {
+@media screen and (min-width: 1080px) {
   #container {
     grid-template-columns: 1fr 300px;
     grid-template-rows: auto 1fr auto;
@@ -59,7 +62,7 @@ a {
 }
 header {
   grid-area: header;
-  border:var(--debug) dashed red;
+  /* border:var(--debug) dashed red; */
   display: flex;
   padding: var(--space) 0;
   flex-direction: column;
@@ -133,7 +136,7 @@ footer {
   grid-area: footer;
   border:var(--debug) dashed green;
   padding : var(--space) 0;
-  border-top :2px solid silver;
+  border-top :2px solid var(--secondary);
   display: flex;
   flex-direction: column;
   align-items: center;
