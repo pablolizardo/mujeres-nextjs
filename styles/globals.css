@@ -62,17 +62,6 @@ a {
 }
 header {
   grid-area: header;
-  /* border:var(--debug) dashed red; */
-  display: flex;
-  padding: var(--space) 0;
-  flex-direction: column;
-  align-items: center;
-}
-@media screen and (min-width: 900px) {
-  header { 
-    flex-direction: row;
-    justify-content: space-between;
-  }
 }
 main {
   grid-area: main;
@@ -89,26 +78,6 @@ aside {
   }
 }
 
-header {
-  text-align: center;
-  
-}
-header nav {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-header  a{
-  padding: var(--space-sm) var(--space-sm);
-  position:relative;
-  color: var(--text-color);
-}
-header > a {
-  font-size: 1.5rem;
-  padding: var(--space-sm) 0;
-
-
-}
 a {
   position:relative;
   padding: var(--space-sm) 0;
