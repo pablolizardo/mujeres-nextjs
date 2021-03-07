@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./Header.module.css";
-import Image from "next/image";
 import Link from "next/link";
 
 function Header() {
@@ -8,15 +7,14 @@ function Header() {
     <header id="header" className={styles.container}>
       <Link href="/">
         <a href="/">
-          <Image
+          <img
+          className={styles.logo}
             src="/images/logo.png"
-            width={140}
-            height={70}
-            objectFit="contain"
+            alt='logo'
           />
         </a>
       </Link>
-      <input type="text" placeholder="Buscar..." />
+      {/* <input type="text" placeholder="Buscar..." /> */}
       <nav>
         <Link activeClass="active" href="/">
           <a href="/">

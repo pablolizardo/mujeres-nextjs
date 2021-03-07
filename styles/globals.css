@@ -23,11 +23,6 @@ body {
   scroll-behavior: smooth;
 }
 
-a {
-  color: var(--primary);
-  text-decoration: none;
-}
-
 * {
   box-sizing: border-box;
 }
@@ -78,7 +73,10 @@ aside {
   }
 }
 
+
 a {
+  color: var(--primary);
+  text-decoration: none;
   position:relative;
   padding: var(--space-sm) 0;
 }
@@ -97,8 +95,6 @@ a:after {
  a:hover:after {
   background: var(--secondary);
   width: 100%;
-
-
 }
 
 footer {

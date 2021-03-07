@@ -10,10 +10,21 @@
   padding: var(--space-sm) ;
   position: relative;
 }
+.logo {
+  width: 360px;
+}
+.container a:first-child:hover:after {
+  display: none;
+}
 @media screen and (min-width: 900px) {
   .container { 
     flex-direction: row;
     justify-content: space-between;
+  }
+  .logo {
+    position: relative;
+    left: -30px;
+    top: -25px;
   }
 }
 .container input {

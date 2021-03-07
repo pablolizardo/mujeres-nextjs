@@ -15,11 +15,9 @@ function Layout({ children }) {
         <aside>Sidebar</aside>
         <footer>
           <span>Mujeres de Nuestra Historia</span>
-          <span>Copyright 2021®</span>
+          <span>Copyright© 2021</span>
           <a href="#header" onClick={goToTop}>
-            
             Ir a arriba ↑
-          
           </a>
         </footer>
       </div>
