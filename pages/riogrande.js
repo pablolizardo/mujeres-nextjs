@@ -5,7 +5,15 @@ function elproyecto() {
   return (
     <Layout>
       <h1>Reseña Histórica Río Grande</h1>
-      <p>
+      <p
+        style={{
+          fontSize: "1.5rem",
+          lineHeight: "2.5rem",
+          textIndent: 0,
+          paddingBottom: "var(--space)",
+          borderBottom: "var(--border-width) solid var(--secondary)",
+        }}
+      >
         Oroski o Amyskn, Juárez Celman, Pellegrini, Popper y finalmente Río
         Grande, son los distintos nombres que tuvo nuestro río en distintas
         épocas, vistos por los ojos de los Selknam, de Julio Popper, de Ramón

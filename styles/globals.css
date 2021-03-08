@@ -3,6 +3,7 @@
   --debug : 0px;
   --space-sm : .5rem;
   --space : 1rem;
+  --space-lg : 2rem;
   --border-width : 2px;
   --border-radius : 5px;
   --primary : #9F5765;
@@ -38,14 +39,14 @@ body {
   gap: var(--space);
   grid-template-areas: 
   "header"
-  "aside"
+  /* "aside" */
   "main"
   "footer"
   ;
 }
 @media screen and (min-width: 1080px) {
   #container {
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 1fr ;
     grid-template-rows: auto 1fr auto;
     min-height: 90vh;
     grid-template-areas: 

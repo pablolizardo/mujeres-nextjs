@@ -7,18 +7,18 @@ function Header() {
     <header id="header" className={styles.container}>
       <Link href="/">
         <a href="/">
-          <img
-          className={styles.logo}
-            src="/images/logo.png"
-            alt='logo'
-          />
+          <figure className={styles.figure}>
+            <img className={styles.foto} src="/images/foto.png" alt="foto" />
+          </figure>
         </a>
       </Link>
+            <img className={styles.logo} src="/images/logo.png" alt="logo" />
       {/* <input type="text" placeholder="Buscar..." /> */}
       <nav>
         <Link activeClass="active" href="/">
           <a href="/">
-            <i data-feather="home"></i>
+            {/* <i data-feather="home"></i> */}
+            Inicio
           </a>
         </Link>
         <Link activeClass="active" href="/presentacion">
