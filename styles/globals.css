@@ -61,12 +61,10 @@ header {
 }
 main {
   grid-area: main;
-  border:var(--debug) dashed blueviolet;
 }
 aside {
   display: none;
   grid-area: aside;
-  border:var(--debug) dashed yellow;
 }
 @media screen and (min-width: 900px) {
   aside {
@@ -100,7 +98,6 @@ a:after {
 
 footer {
   grid-area: footer;
-  border:var(--debug) dashed green;
   padding : var(--space) 0;
   border-top :2px solid var(--secondary);
   display: flex;
