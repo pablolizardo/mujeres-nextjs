@@ -3,6 +3,7 @@ import React from 'react'
 import Layout from '../../components/Common/Layout'
 import styles from "./Post.module.css";
 function Post(post) {
+    const paragraphs = post.fields.body.split("\n").filter((p) => p !== "")
     return (
       <Layout>
         <h2 className={styles.title}>{post.fields.title}</h2>
@@ -13,12 +14,25 @@ function Post(post) {
           className={styles.image}
           src={"https:" + post.fields.heroImage.fields.file.url}
         />
-        {post.fields.body.split("\n").filter(p => p !== '').map(p => 
-        <p
-            className={styles.paragraph}
-            dangerouslySetInnerHTML={{ __html: p }}
+       
+        {paragraphs.slice(0,paragraphs.length / 2)
+          .map((p) => (
+            <p
+              className={styles.paragraph}
+              dangerouslySetInnerHTML={{ __html: p }}
             />
-        )}
+          ))}
+           <img
+          className={styles.fotoVieja}
+          src={"https:" + post.fields.fotoVieja.fields.file.url}
+        />
+        {paragraphs.slice(paragraphs.length / 2, -1)
+          .map((p) => (
+            <p
+              className={styles.paragraph}
+              dangerouslySetInnerHTML={{ __html: p }}
+            />
+          ))}
       </Layout>
     );
 }
@@ -57,6 +71,5 @@ export async function getStaticProps({ params }) {
         content_type: 'blogPost'
     })
     const post = posts.items.find(post => post.fields.slug === params.slug)
-    console.log(post.fields.title)
     return { props: post }
 }

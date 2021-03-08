@@ -38,7 +38,18 @@
     max-height: 700px;
     border-radius: var(--border-radius);
   }
+.fotoVieja{
+  border-radius: var(--border-radius);
+  width: 100%;
+}
+@media screen and (min-width: 768px) {
+.fotoVieja {
+  width: 50%;
+  float: right;
+  margin-left: var(--space);
+}
 
+}
   .right {
     display: flex;
     flex-direction: column;
