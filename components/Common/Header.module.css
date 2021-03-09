@@ -59,7 +59,7 @@
 
   position: absolute;
   top: 0; bottom : 0; left: 0; right: 0;
-  background: linear-gradient(-15deg, white, transparent);
+  background: linear-gradient(-15deg, white 30%, transparent);
 
 }
 @media screen and (min-width: 768px) {
@@ -124,13 +124,19 @@
 }
 .container nav a {
     color: var(--text-color);
-  font-size: 1.2rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.08rem;
   opacity: .6;
-  padding: var(--space-sm);
-  margin-left: var(--space);
+  /* padding: var(--space-sm); */
 }
 .container nav a:hover {
   opacity: 1;
+}
+@media screen and (min-width: 768px) {
+  .container nav a {
+   margin-left: var(--space);
+   font-size: 1.2rem;
+
+  }
 }

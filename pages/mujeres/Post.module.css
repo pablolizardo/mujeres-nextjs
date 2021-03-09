@@ -20,14 +20,24 @@
     border-radius: 5px;
     transition: .5s;
   }
+  .page{
+    max-width: 830px;
+    margin:auto;
+    
+  }
+  .page p {
+    color : #666;
+  }
   @media screen and (min-width: 768px) {
     .container {
       flex-direction: row;
     }
   }
+ 
   .title {
-      margin-top: 0;
+    margin-top: 0;
     font-size: 3rem;
+    font-size: calc(2rem + (24 - 16) * (100vw - 400px) / (800 - 400));
     line-height: 1em;
     margin-bottom: 1rem;
   }

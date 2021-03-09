@@ -9,16 +9,17 @@
   --primary : #9F5765;
   --secondary : #c4c4c4;
   --text-color : #333;
+  --white : #e8e5de;
 }
 ::selection{
-background-color: #c3a70a3b;
+background-color: var(--white);
 }
 html,
 body {
   padding: 0;
   margin: 1rem 0;
   font-size: 16px;
-  font-family: 'Roboto Slab', serif;
+  font-family: 'Roboto Slab', Georgia, 'Times New Roman', Times, serif;
   line-height: 1.7em;
   color: var(--text-color);
   scroll-behavior: smooth;
@@ -33,6 +34,7 @@ body {
   display: grid;
   border:var(--debug) solid red;
   max-width: 1280px;
+  /* background-color: #F8F1E4; */
   grid-template-columns: 1fr ;
   margin:auto;
   width: 90%;

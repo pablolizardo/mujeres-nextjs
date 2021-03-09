@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import Layout from "../../components/Common/Layout";
 import styles from "./Post.module.css";
@@ -36,6 +35,7 @@ function Post(post) {
      
      
       ></progress>
+      <section className={styles.page}>
       <h2 className={styles.title}>{post.fields.title}</h2>
       <h3 className={styles.subtitle}>
         {post.fields.subtitle || "Madre y Docente"}
@@ -45,22 +45,24 @@ function Post(post) {
         src={"https:" + post.fields.heroImage.fields.file.url}
       />
 
-      {paragraphs.slice(0, paragraphs.length / 2).map((p) => (
-        <p
-          className={styles.paragraph}
-          dangerouslySetInnerHTML={{ __html: p }}
+        {paragraphs.slice(0, paragraphs.length / 2).map((p) => (
+          <p
+            className={styles.paragraph}
+            dangerouslySetInnerHTML={{ __html: p }}
+          />
+        ))}
+        <img
+          className={styles.fotoVieja}
+          src={"https:" + post.fields.fotoVieja.fields.file.url}
         />
-      ))}
-      <img
-        className={styles.fotoVieja}
-        src={"https:" + post.fields.fotoVieja.fields.file.url}
-      />
-      {paragraphs.slice(paragraphs.length / 2, -1).map((p) => (
-        <p
-          className={styles.paragraph}
-          dangerouslySetInnerHTML={{ __html: p }}
-        />
-      ))}
+        {paragraphs.slice(paragraphs.length / 2, -1).map((p) => (
+          <p
+            className={styles.paragraph}
+            dangerouslySetInnerHTML={{ __html: p }}
+          />
+        ))}
+      </section>
+
     </Layout>
   );
 }
