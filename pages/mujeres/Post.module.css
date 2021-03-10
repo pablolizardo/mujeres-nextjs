@@ -95,10 +95,19 @@
     text-indent: 0;
     padding-bottom: var(--space);
     border-bottom: var(--border-width) solid var(--secondary);
-  
   }
  .paragraph {
     text-indent: calc(var(--space) * 2);
+    text-align: justify;
     font-size: 1.2rem;
     line-height: 2.2rem;
+  }
+  .paragraph:nth-of-type(5),  .paragraph:nth-of-type(20),  .paragraph:nth-of-type(30) ,  .paragraph:nth-of-type(40) {
+    text-indent: calc(var(--space) * 2);
+    text-align: justify;
+    font-size: 1.3rem;
+    /* font-style: italic; */
+    padding : var(--space-xl);
+    background-color: rgb(243, 238, 232);
+    line-height: 2.35rem;
   }

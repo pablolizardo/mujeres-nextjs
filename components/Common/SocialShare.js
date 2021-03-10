@@ -3,6 +3,7 @@ import React from "react";
 import styles from "./SocialShare.module.css";
 
 function SocialShare({ title, subtitle, description, url, img }) {
+    const pinterest = false
   return (
     <div className={styles.container}>
       <Link
@@ -46,7 +47,7 @@ function SocialShare({ title, subtitle, description, url, img }) {
           </svg>
         </a>
       </Link>
-      <Link href={`https://www.pinterest.com/pin/create/button/?url=${url}`}>
+      { pinterest && <Link href={`https://www.pinterest.com/pin/create/button/?url=${url}`}>
         <a
           target="_blank"
           rel="noreferer"
@@ -65,7 +66,7 @@ function SocialShare({ title, subtitle, description, url, img }) {
             />
           </svg>
         </a>
-      </Link>
+      </Link>}
     </div>
   );
 }
