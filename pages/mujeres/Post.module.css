@@ -7,16 +7,17 @@
     bottom: 0;
     left: 0;
     right: 0;
+    height: 6px;
+    border-radius: 3px;
     margin: 5px auto;
     width: calc(100% - 10px);
     appearance: none;
   }
   .progress::-webkit-progress-bar  {
     background-color: rgba(255,255,255,.9);
-    color :black;
   }
   .progress::-webkit-progress-value  {
-    background-color: black;
+    background-color: var(--text-color);
     border-radius: 5px;
     transition: .5s;
   }

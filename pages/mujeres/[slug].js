@@ -1,40 +1,41 @@
 import Head from "next/head";
 import React, { useEffect, useRef, useState } from "react";
 import Layout from "../../components/Common/Layout";
+import SocialShare from "../../components/Common/SocialShare";
 import styles from "./Post.module.css";
 function Post(post) {
   const progressRef = useRef();
-  const [progress, setProgress] = useState(0)
-  useEffect(()=>{
-    window.addEventListener('scroll', reading)
-    return () => window.removeEventListener('scroll', reading)
-  },[])
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    window.addEventListener("scroll", reading);
+    return () => window.removeEventListener("scroll", reading);
+  }, []);
   const reading = (e) => {
-    setProgress((window.pageYOffset  * 100 ) / e.target.body.clientHeight)
-  }
+    setProgress((window.pageYOffset * 100) / e.target.body.clientHeight);
+  };
   const paragraphs = post.fields.body.split("\n").filter((p) => p !== "");
   return (
     <Layout>
       <Head>
         <title>{post.fields.title}</title>
         <meta property="og:title" content={post.fields.description} />
-        <meta
-          property="og:description"
-          content={post.fields.description}
-        />
+        <meta property="og:description" content={post.fields.description} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://www.100rgmujeres.com.ar/mujeres/${post.fields.slug}`} />
+        <meta
+          property="og:url"
+          content={`https://www.100rgmujeres.com.ar/mujeres/${post.fields.slug}`}
+        />
         <meta
           property="og:image"
           content={"https:" + post.fields.heroImage.fields.file.url}
         />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content={post.fields.title} />
+        <meta name="twitter:description" content={post.fields.description} />
         <meta
-          name="twitter:description"
-          content={post.fields.description}
+          name="twitter:site"
+          content={`https://www.100rgmujeres.com.ar/mujeres/${post.fields.slug}`}
         />
-        <meta name="twitter:site" content={`https://www.100rgmujeres.com.ar/mujeres/${post.fields.slug}`} />
         <meta name="twitter:creator" content="Mujeres de nuestra Historia" />
 
         <meta
@@ -50,10 +51,15 @@ function Post(post) {
         max="100"
       ></progress>
       <section className={styles.page}>
-        <h2 className={styles.title}>{post.fields.title}</h2>
-        <h3 className={styles.subtitle}>
-          {post.fields.subtitle || ""}
-        </h3>
+        <SocialShare 
+        title={post.fields.title}
+        subtitle={post.fields.subtitle || ''}
+        description={post.fields.description }
+        url={`https://www.100rgmujeres.com.ar/mujeres/${post.fields.slug}`}
+        img={"https:" + post.fields.heroImage.fields.file.url}
+         />
+          <h2 className={styles.title}>{post.fields.title}</h2>
+          <h3 className={styles.subtitle}>{post.fields.subtitle || ""}</h3>
         <img
           className={styles.image}
           src={"https:" + post.fields.heroImage.fields.file.url}

@@ -1,0 +1,12 @@
+.container {
+    float: right;
+    display: flex;
+    align-items: center;
+}
+.container > * {
+    padding :var(--space);
+}
+.link { 
+    width: 26px;
+    height: auto;
+}
