@@ -17,33 +17,47 @@ function Post(post) {
     <Layout>
       <Head>
         <title>{post.fields.title}</title>
+        <meta property="og:title" content={post.fields.description} />
+        <meta
+          property="og:description"
+          content={post.fields.description}
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://www.100rgmujeres.com.ar/mujeres/${post.fields.slug}`} />
+        <meta
+          property="og:image"
+          content={"https:" + post.fields.heroImage.fields.file.url}
+        />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={post.fields.title} />
+        <meta
+          name="twitter:description"
+          content={post.fields.description}
+        />
+        <meta name="twitter:site" content={`https://www.100rgmujeres.com.ar/mujeres/${post.fields.slug}`} />
+        <meta name="twitter:creator" content="Mujeres de nuestra Historia" />
+
+        <meta
+          name="twitter:image"
+          content={"https:" + post.fields.heroImage.fields.file.url}
+        />
       </Head>
       <progress
-      color='black'
-    
-    
-              className={styles.progress}
- 
- 
-                    ref={progressRef}
-  
-  
-                  value={progress}
-    
-    
-              max="100"
-     
-     
+        color="black"
+        className={styles.progress}
+        ref={progressRef}
+        value={progress}
+        max="100"
       ></progress>
       <section className={styles.page}>
-      <h2 className={styles.title}>{post.fields.title}</h2>
-      <h3 className={styles.subtitle}>
-        {post.fields.subtitle || "Madre y Docente"}
-      </h3>
-      <img
-        className={styles.image}
-        src={"https:" + post.fields.heroImage.fields.file.url}
-      />
+        <h2 className={styles.title}>{post.fields.title}</h2>
+        <h3 className={styles.subtitle}>
+          {post.fields.subtitle || ""}
+        </h3>
+        <img
+          className={styles.image}
+          src={"https:" + post.fields.heroImage.fields.file.url}
+        />
 
         {paragraphs.slice(0, paragraphs.length / 2).map((p) => (
           <p
@@ -62,7 +76,6 @@ function Post(post) {
           />
         ))}
       </section>
-
     </Layout>
   );
 }
