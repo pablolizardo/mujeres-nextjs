@@ -5,6 +5,7 @@ import SocialShare from "../../components/Common/SocialShare";
 import styles from "./Post.module.css";
 function Post(post) {
   const progressRef = useRef();
+  // console.log(post.fields.audio.fields.file.url);
   const [progress, setProgress] = useState(0);
   useEffect(() => {
     window.addEventListener("scroll", reading);
@@ -64,9 +65,13 @@ function Post(post) {
           className={styles.image}
           src={"https:" + post.fields.heroImage.fields.file.url}
         />
+        <audio controls className={styles.audio}>
+          <source src={`https:${post.fields.audio.fields.file.url}`} type='audio/mp3'/>
+          </audio>
 
-        {paragraphs.slice(0, paragraphs.length / 2).map((p) => (
+        {paragraphs.slice(0, paragraphs.length / 2).map((p,index) => (
           <p
+          key={index}
             className={styles.paragraph}
             dangerouslySetInnerHTML={{ __html: p }}
           />
@@ -75,8 +80,10 @@ function Post(post) {
           className={styles.fotoVieja}
           src={"https:" + post.fields.fotoVieja.fields.file.url}
         />
-        {paragraphs.slice(paragraphs.length / 2, -1).map((p) => (
+        {paragraphs.slice(paragraphs.length / 2, -1).map((p, index) => (
           <p
+          key={index}
+
             className={styles.paragraph}
             dangerouslySetInnerHTML={{ __html: p }}
           />

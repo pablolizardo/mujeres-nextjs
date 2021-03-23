@@ -14,7 +14,7 @@
     appearance: none;
   }
   .progress::-webkit-progress-bar  {
-    background-color: rgba(255,255,255,.9);
+    background-color: var(--secondary);
   }
   .progress::-webkit-progress-value  {
     background-color: var(--text-color);
@@ -25,6 +25,14 @@
     max-width: 830px;
     margin:auto;
     
+  }
+  .audio {
+    width: 100%;
+    margin-top: var(--space-lg);
+  }
+  .audio::-webkit-media-controls-panel{
+    background-color: var(--secondary);
+
   }
   .page p {
     color : #666;
