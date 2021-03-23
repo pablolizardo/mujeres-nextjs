@@ -65,9 +65,9 @@ function Post(post) {
           className={styles.image}
           src={"https:" + post.fields.heroImage.fields.file.url}
         />
-        <audio controls className={styles.audio}>
+        {post.fields.audio && <audio controls className={styles.audio}>
           <source src={`https:${post.fields.audio.fields.file.url}`} type='audio/mp3'/>
-          </audio>
+          </audio>}
 
         {paragraphs.slice(0, paragraphs.length / 2).map((p,index) => (
           <p
