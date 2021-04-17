@@ -88,6 +88,7 @@ function Post(post) {
             dangerouslySetInnerHTML={{ __html: p }}
           />
         ))}
+        <a href={post.fields.enlace} target="_blank">Ver página de {post.fields.title}</a>
       </section>
     </Layout>
   );
