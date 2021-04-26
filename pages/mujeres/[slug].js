@@ -65,11 +65,16 @@ function Post(post) {
           className={styles.image}
           src={"https:" + post.fields.heroImage.fields.file.url}
         />
+       
+       
         {post.fields.audio && <audio controls className={styles.audio}>
+
           <source src={`https:${post.fields.audio.fields.file.url}`} type='audio/mp3'/>
+
           </audio>}
 
-        {paragraphs.slice(0, paragraphs.length / 2).map((p,index) => (
+
+                  {paragraphs.slice(0, paragraphs.length / 2).map((p,index) => (
           <p
           key={index}
             className={styles.paragraph}
@@ -80,7 +85,7 @@ function Post(post) {
           className={styles.fotoVieja}
           src={"https:" + post.fields.fotoVieja.fields.file.url}
         />
-        {paragraphs.slice(paragraphs.length / 2, -1).map((p, index) => (
+        {paragraphs.slice(Math.max(paragraphs.length / 2, -1)).map((p, index) => (
           <p
           key={index}
 
@@ -88,7 +93,14 @@ function Post(post) {
             dangerouslySetInnerHTML={{ __html: p }}
           />
         ))}
-        <a href={post.fields.enlace} target="_blank">Ver página de {post.fields.title}</a>
+        {post.fields.foto3 &&
+          <img
+          className={styles.image}
+          src={"https:" + post.fields.foto3.fields.file.url}
+        /> }
+        {post.fields.enlace &&
+        <a href={post.fields.enlace} target="_blank">Ver página de {post.fields.title}</a> }
+
       </section>
     </Layout>
   );
