@@ -31,6 +31,9 @@ function Header() {
           <a href="/buscar">Reseña Río Grande</a>
         </Link>
       </nav>
+      <audio controls autoplay className={styles.audio}>
+          <source src="Recitado.mp3" type="audio/mpeg"/>
+            </audio>
     </header>
   );
 }

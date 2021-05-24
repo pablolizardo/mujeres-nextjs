@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Link from "next/link";
 import Layout from "../components/Common/Layout";
 import PostLink from "../components/Common/PostLink";
 import styles from "../styles/Home.module.css";
@@ -106,9 +107,26 @@ export default function Home(posts) {
         />
       </Head>
       <Layout>
+       <div className={styles.containers}>
         {posts.data.items.map((post, index) => (
-          <PostLink post={post} key={index} />
+          <div className={styles.card}>
+            <img src={"https:" + post.fields.heroImage.fields.file.url}></img>
+            <div className={styles.textos}>
+            <h1>{post.fields.title}</h1>
+            <h2>{post.fields.subtitle}</h2>
+            <p>{post.fields.description}</p>
+            <Link href={`/mujeres/${post.fields.slug}`}>
+            <a
+              className={styles.keepReading}
+              href={`/mujeres/${post.fields.slug}`}
+            >
+              Continuar Leyendo →
+            </a>
+          </Link>
+            </div>
+            </div>
         ))}
+        </div>
       </Layout>
     </div>
   );
