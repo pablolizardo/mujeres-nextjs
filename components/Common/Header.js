@@ -12,7 +12,7 @@ function Header() {
           </figure>
         </a>
       </Link>
-            <img className={styles.logo} src="/images/logo.png" alt="logo" />
+      <img className={styles.logo} src="/images/logo.png" alt="logo" />
       {/* <input type="text" placeholder="Buscar..." /> */}
       <nav>
         <Link activeClass="active" href="/">
@@ -32,8 +32,8 @@ function Header() {
         </Link>
       </nav>
       <audio controls autoplay className={styles.audio}>
-          <source src="Recitado.mp3" type="audio/mpeg"/>
-            </audio>
+        <source src="/recitado_low.mp3" type="audio/mpeg" />
+      </audio>
     </header>
   );
 }
