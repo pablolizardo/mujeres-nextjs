@@ -22,6 +22,14 @@
   animation-fill-mode: forwards;
   animation-iteration-count: 1;
 }
+.audio {
+  height: 20px;
+  margin-top: -20px;
+  margin-left: 8px;
+}
+.audio::-webkit-media-controls-panel{
+  background-color: var(--secondary);
+}
 @media screen and (min-width: 768px) {
   .logo {
     width: auto;
