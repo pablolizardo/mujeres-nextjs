@@ -1,17 +1,16 @@
 import React from "react";
-import styles from "./Footer.module.css";
 
 function Footer() {
-  const goToTop = () => {
-    window.scrollTo(0, 0);
-  };
+  // const goToTop = () => {
+  //   window.scrollTo(0, 0);
+  // };
   return (
-    <footer className={styles.container}>
+    <footer className={'mx-auto flex justify-between gap-10 '}>
       <span>Mujeres de Nuestra Historia</span>
       <span>Copyright© 2021</span>
-      <a href="#header" onClick={goToTop}>
+      {/* <a href="#header" onClick={goToTop}>
         Ir a arriba ↑
-      </a>
+      </a> */}
     </footer>
   );
 }

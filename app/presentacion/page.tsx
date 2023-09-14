@@ -1,24 +1,15 @@
-import Head from "next/head";
-import React from "react";
-import Layout from "../components/Common/Layout";
-
-function presentacion() {
-    return (
-      <>
-        <Head>
-          <title>Presentación</title>
-        </Head>
-        <Layout>
-          <h1>Presentación</h1>
-          <p
+const Page = () => {
+    return (<article className="prose mx-auto mt-20">
+        <h1>Presentación</h1>
+        <p
             style={{
-              fontSize: "1.5rem",
-              lineHeight: "2.5rem",
-              textIndent: 0,
-              paddingBottom: "var(--space)",
-              borderBottom: "var(--border-width) solid var(--secondary)",
+                fontSize: "1.5rem",
+                lineHeight: "2.5rem",
+                textIndent: 0,
+                paddingBottom: "var(--space)",
+                borderBottom: "var(--border-width) solid var(--secondary)",
             }}
-          >
+        >
             Mi nombre es María Alejandra Lizardo, nací en la ciudad de Río
             Grande el 14 de septiembre de 1978 y soy la mayor de 5 hermanos
             fueguinos también. Mi padre Rodolfo Daniel Lizardo maestro normal y
@@ -29,8 +20,8 @@ function presentacion() {
             cuánta necesidad surgiera. Hasta que a principios del año 1978
             inician su labor docente en la escuela N 4 de la ciudad de Río
             Grande en el antiguo Barrio C.A.P.
-          </p>
-          <p>
+        </p>
+        <p>
             Mi infancia y adolescencia transcurrieron en esta ciudad. Cursando
             mis estudios primarios parte en la escuela N 14 y el Instituto María
             Auxiliadora; finalizando allí también mis estudios secundarios con
@@ -52,10 +43,8 @@ function presentacion() {
             patagonia y Buenos Aires. La radio también fue parte de mi
             formación, me capacité y realicé cursos y talleres de producción,
             locución y periodismo.
-          </p>
-        </Layout>
-      </>
-    );
+        </p>
+    </article>);
 }
 
-export default presentacion;
+export default Page;
