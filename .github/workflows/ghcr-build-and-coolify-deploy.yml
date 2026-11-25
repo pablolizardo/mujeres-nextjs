@@ -1,0 +1,274 @@
+name: GHCR build and Coolify deploy
+
+# Reusable template: copy this workflow and .github/coolify-image-build.yml
+# into another repo, set secrets, and point Coolify at ghcr.io/pablolizardo/<repo>.
+# Builds run on GitHub Actions (nixpacks), never on the Coolify VPS.
+# The published image is a filesystem-only repack so build secrets are not
+# left as image ENV. Runtime env stays in Coolify.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git SHA or branch to build (optional; defaults to the triggering commit)"
+        required: false
+        type: string
+
+concurrency:
+  group: ghcr-coolify-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.sha }}
+
+      - name: Load image build config
+        id: cfg
+        env:
+          DISPATCH_REF: ${{ github.event.inputs.ref }}
+        run: |
+          set +x
+          python3 << 'PY'
+          import os, json
+          from pathlib import Path
+          raw = Path(".github/coolify-image-build.yml").read_text() if Path(".github/coolify-image-build.yml").exists() else ""
+          cfg = {}
+          for line in raw.splitlines():
+              line = line.split("#", 1)[0].rstrip()
+              if not line or ":" not in line:
+                  continue
+              k, v = line.split(":", 1)
+              k, v = k.strip(), v.strip().strip('"').strip("'")
+              if k:
+                  cfg[k] = v
+          repo = os.environ["GITHUB_REPOSITORY"].split("/")[-1]
+          owner = os.environ["GITHUB_REPOSITORY_OWNER"].lower()
+          cfg.setdefault("node_version", "22")
+          cfg.setdefault("node_options", "--experimental-require-module")
+          cfg.setdefault("install_command", "npm install")
+          cfg.setdefault("build_command", "npx prisma generate && npx next build --webpack")
+          cfg.setdefault("start_command", "npm start")
+          cfg.setdefault("port", "3000")
+          cfg.setdefault("nixpacks_version", "1.41.0")
+          cfg.setdefault("image_name", f"ghcr.io/{owner}/{repo}")
+          image = cfg["image_name"].lower()
+          import subprocess
+          sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+          event = os.environ.get("GITHUB_EVENT_NAME") or ""
+          input_ref = (os.environ.get("DISPATCH_REF") or "").strip()
+          # workflow_dispatch with an explicit SHA should not retag the branch pointer.
+          tag_branch = os.environ.get("GITHUB_REF_NAME", "main")
+          if event == "workflow_dispatch" and input_ref and input_ref not in {tag_branch, "main", "master"}:
+              tag_branch = sha
+          outputs = {
+              "node_version": cfg["node_version"],
+              "node_options": cfg["node_options"],
+              "install_command": cfg["install_command"],
+              "build_command": cfg["build_command"],
+              "start_command": cfg["start_command"],
+              "port": cfg["port"],
+              "nixpacks_version": cfg["nixpacks_version"],
+              "image_name": image,
+              "tag_sha": sha,
+              "tag_branch": os.environ.get("GITHUB_REF_NAME", "main"),
+          }
+          out = Path(os.environ["GITHUB_OUTPUT"])
+          with out.open("a") as f:
+              for k, v in outputs.items():
+                  if "\n" in v:
+                      raise SystemExit(f"multiline config value not allowed: {k}")
+                  f.write(f"{k}={v}\n")
+          print("image:", image)
+          print("install:", outputs["install_command"])
+          print("build:", outputs["build_command"])
+          print("start:", outputs["start_command"])
+          print("node:", outputs["node_version"], "nixpacks:", outputs["nixpacks_version"])
+          PY
+
+      - name: Install nixpacks
+        run: |
+          set -euo pipefail
+          VER="${{ steps.cfg.outputs.nixpacks_version }}"
+          curl -fL "https://github.com/railwayapp/nixpacks/releases/download/v${VER}/nixpacks-v${VER}-x86_64-unknown-linux-musl.tar.gz" \
+            | sudo tar -xz -C /usr/local/bin
+          nixpacks --version
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Require BUILD_ENV_FILE
+        env:
+          BUILD_ENV_FILE: ${{ secrets.BUILD_ENV_FILE }}
+        run: |
+          set +x
+          if [ -z "${BUILD_ENV_FILE:-}" ]; then
+            echo "BUILD_ENV_FILE secret is missing. Set it (and COOLIFY_TOKEN, COOLIFY_APP_UUID) before this workflow can build."
+            exit 1
+          fi
+          echo "BUILD_ENV_FILE is present (value not printed)"
+
+      - name: Import build env and build with nixpacks
+        env:
+          BUILD_ENV_FILE: ${{ secrets.BUILD_ENV_FILE }}
+          NIXPACKS_NODE_VERSION: ${{ steps.cfg.outputs.node_version }}
+          NODE_OPTIONS: ${{ steps.cfg.outputs.node_options }}
+          IMAGE_NAME: ${{ steps.cfg.outputs.image_name }}
+          INSTALL_CMD: ${{ steps.cfg.outputs.install_command }}
+          BUILD_CMD: ${{ steps.cfg.outputs.build_command }}
+          START_CMD: ${{ steps.cfg.outputs.start_command }}
+          CI: "true"
+        run: |
+          set +x
+          set -euo pipefail
+          python3 << 'PY'
+          import os, subprocess, sys
+          from pathlib import Path
+
+          raw = os.environ.get("BUILD_ENV_FILE") or ""
+          pairs = []
+          for line in raw.splitlines():
+              s = line.strip()
+              if not s or s.startswith("#") or "=" not in s:
+                  continue
+              k, v = s.split("=", 1)
+              k = k.strip()
+              if not k or k in {"NIXPACKS_NODE_VERSION", "NODE_OPTIONS", "CI"}:
+                  continue
+              if v.startswith('"') and v.endswith('"') and len(v) >= 2:
+                  val = bytes(v[1:-1], "utf-8").decode("unicode_escape")
+              elif v.startswith("'") and v.endswith("'") and len(v) >= 2:
+                  val = v[1:-1]
+              else:
+                  val = v
+              if val:
+                  print(f"::add-mask::{val}")
+              if v and v != val:
+                  print(f"::add-mask::{v}")
+              pairs.append((k, val))
+          print("imported build env keys:", ",".join(k for k, _ in pairs) if pairs else "(none)")
+
+          cmd = [
+              "nixpacks", "build", ".",
+              "--name", f"{os.environ['IMAGE_NAME']}:nixpacks-src",
+              "--install-cmd", os.environ["INSTALL_CMD"],
+              "--build-cmd", os.environ["BUILD_CMD"],
+              "--start-cmd", os.environ["START_CMD"],
+              "--platform", "linux/amd64",
+              "--env", f"NIXPACKS_NODE_VERSION={os.environ['NIXPACKS_NODE_VERSION']}",
+              "--env", f"NODE_OPTIONS={os.environ.get('NODE_OPTIONS') or ''}",
+          ]
+          for k, val in pairs:
+              cmd.extend(["--env", f"{k}={val}"])
+          print(
+              "nixpacks build keys:",
+              "NIXPACKS_NODE_VERSION,NODE_OPTIONS," + ",".join(k for k, _ in pairs),
+          )
+          print("node_version:", os.environ.get("NIXPACKS_NODE_VERSION"))
+          # Do not print argv (contains secret values).
+          result = subprocess.run(cmd)
+          sys.exit(result.returncode)
+          PY
+
+      - name: Repack runtime image without build-secret ENV
+        run: |
+          set +x
+          set -euo pipefail
+          python3 << 'PY'
+          import json, os, subprocess, textwrap
+          from pathlib import Path
+          src = "${{ steps.cfg.outputs.image_name }}:nixpacks-src"
+          dest_sha = "${{ steps.cfg.outputs.image_name }}:${{ steps.cfg.outputs.tag_sha }}"
+          dest_branch = "${{ steps.cfg.outputs.image_name }}:${{ steps.cfg.outputs.tag_branch }}"
+          port = "${{ steps.cfg.outputs.port }}"
+          inspect = json.loads(subprocess.check_output(["docker", "inspect", src], text=True))[0]
+          cfg = inspect["Config"]
+          workdir = cfg.get("WorkingDir") or "/app"
+          user = cfg.get("User") or ""
+          cmd = cfg.get("Cmd") or []
+          entry = cfg.get("Entrypoint") or []
+          path_env = None
+          safe_env = []
+          for item in (cfg.get("Env") or []):
+              if "=" not in item:
+                  continue
+              k, v = item.split("=", 1)
+              if k == "PATH":
+                  path_env = v
+              if k in {"PATH", "HOME", "NODE_ENV", "NIXPACKS_METADATA", "NIXPACKS_PATH", "PORT", "HOSTNAME", "NIXPACKS_NODE_VERSION", "NODE_OPTIONS", "NPM_CONFIG_PRODUCTION", "PNPM_HOME", "LANG", "LC_ALL"} or k.startswith("NIXPACKS_"):
+                  if k not in {"NODE_ENV", "PORT"}:
+                      safe_env.append((k, v))
+          safe_env.append(("NODE_ENV", "production"))
+          safe_env.append(("PORT", port))
+          def json_arr(arr):
+              return json.dumps(arr)
+          env_lines = "\n".join(f'ENV {k}={json.dumps(v)}' for k, v in safe_env)
+          user_line = f"USER {user}" if user else ""
+          entry_line = f"ENTRYPOINT {json_arr(entry)}" if entry else ""
+          cmd_line = f"CMD {json_arr(cmd)}" if cmd else ""
+          dockerfile = textwrap.dedent(f"""
+          FROM {src} AS src
+          FROM scratch
+          COPY --from=src / /
+          WORKDIR {workdir}
+          {env_lines}
+          EXPOSE {port}
+          {user_line}
+          {entry_line}
+          {cmd_line}
+          """).strip() + "\n"
+          Path("/tmp/repack.Dockerfile").write_text(dockerfile)
+          print("repack workdir:", workdir, "user:", user or "(default)", "cmd:", cmd, "entrypoint:", entry)
+          PY
+          docker build -f /tmp/repack.Dockerfile \
+            -t "${{ steps.cfg.outputs.image_name }}:${{ steps.cfg.outputs.tag_sha }}" \
+            -t "${{ steps.cfg.outputs.image_name }}:${{ steps.cfg.outputs.tag_branch }}" \
+            --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+            --label "org.opencontainers.image.revision=${{ github.sha }}" \
+            .
+          docker push "${{ steps.cfg.outputs.image_name }}:${{ steps.cfg.outputs.tag_sha }}"
+          docker push "${{ steps.cfg.outputs.image_name }}:${{ steps.cfg.outputs.tag_branch }}"
+          docker rmi "${{ steps.cfg.outputs.image_name }}:nixpacks-src" || true
+          rm -f /tmp/repack.Dockerfile
+
+      - name: Trigger Coolify deploy
+        env:
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          COOLIFY_APP_UUID: ${{ secrets.COOLIFY_APP_UUID }}
+          COOLIFY_BASE_URL: ${{ vars.COOLIFY_BASE_URL }}
+          COOLIFY_BASE_URL_SECRET: ${{ secrets.COOLIFY_BASE_URL }}
+        run: |
+          set +x
+          set -euo pipefail
+          if [ -z "${COOLIFY_TOKEN:-}" ] || [ -z "${COOLIFY_APP_UUID:-}" ]; then
+            echo "COOLIFY_TOKEN or COOLIFY_APP_UUID not set; image published, deploy skipped"
+            exit 0
+          fi
+          BASE="${COOLIFY_BASE_URL:-${COOLIFY_BASE_URL_SECRET:-http://178.156.164.49:8000}}"
+          BASE="${BASE%/}"
+          echo "Triggering Coolify deploy for app ${COOLIFY_APP_UUID}"
+          curl -fsS -X POST "${BASE}/api/v1/deploy?uuid=${COOLIFY_APP_UUID}&force=true" \
+            -H "Authorization: Bearer ${COOLIFY_TOKEN}" \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/json" \
+            -o /tmp/coolify-deploy.json
+          python3 -c "import json; d=json.load(open('/tmp/coolify-deploy.json')); print('coolify deploy response keys:', list(d) if isinstance(d,dict) else type(d).__name__); print('uuid(s):', d if not isinstance(d,dict) or 'token' not in str(d).lower() else {k:d.get(k) for k in d if 'token' not in k.lower() and 'secret' not in k.lower()})"
+          rm -f /tmp/coolify-deploy.json

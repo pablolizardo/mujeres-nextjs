@@ -1,0 +1,9 @@
+# Build config for the GHCR + Coolify workflow. No secrets in this file.
+node_version: "22"
+node_options: ""
+install_command: "yarn install"
+build_command: "yarn build"
+start_command: "yarn start"
+port: "3000"
+nixpacks_version: "1.41.0"
+image_name: "ghcr.io/pablolizardo/mujeres-nextjs"
